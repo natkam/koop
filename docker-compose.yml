@@ -13,7 +13,7 @@ services:
     stdin_open: true
     tty: true
     ports:
-    - 8000:8000
+      - 8000:8000
     env_file:
       - .env
     depends_on:
@@ -23,9 +23,10 @@ services:
       - static:/backend/static
 
   db:
-    build: ./db
-    image: koop_db
+    image: postgres:13
     container_name: koop-db
+    ports:
+      - 5432:5432
     env_file:
       - .env
     volumes:
