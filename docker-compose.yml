@@ -3,6 +3,12 @@ services:
     build: ./backend
     image: koop_backend
     container_name: koop-backend
+    command:
+      bash -c "chmod +x db_health_check.sh
+      && ./db_health_check.sh
+      && python manage.py collectstatic --noinput
+      && python manage.py migrate --noinput
+      && python manage.py runserver 0.0.0.0:8000"
     restart: always
     stdin_open: true
     tty: true
@@ -22,3 +28,7 @@ services:
       - .env
     volumes:
       - db-data:/var/lib/postgresql/data
+
+volumes:
+  static:
+  db-data:
