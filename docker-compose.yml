@@ -1,0 +1,24 @@
+services:
+  backend:
+    build: ./backend
+    image: koop_backend
+    container_name: koop-backend
+    restart: always
+    stdin_open: true
+    tty: true
+    env_file:
+      - .env
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/backend
+      - static:/backend/static
+
+  db:
+    build: ./db
+    image: koop_db
+    container_name: koop-db
+    env_file:
+      - .env
+    volumes:
+      - db-data:/var/lib/postgresql/data
