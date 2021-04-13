@@ -3,12 +3,15 @@ import React, { useState } from "react";
 import { render } from "react-dom";
 import { Provider } from 'react-redux';
 import { store } from './store';
+import {ProductTable} from "./features/products/productTable";
 
 
-function App() {
-    const [state, setState] = useState("CLICK");
+const App = () => {
+    const [state, setState] = useState(0);
+
     return <>
-        <button onClick={() => setState("CLICKED")}>Super guzik</button>
+        <ProductTable></ProductTable>
+        <button onClick={() => setState(state + 1)}>{state}</button>
     </>
 }
 
