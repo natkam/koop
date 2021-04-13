@@ -1,4 +1,4 @@
-import {takeEvery, takeLatest, put} from 'redux-saga/effects';
+import {takeEvery} from 'redux-saga/effects';
 import {fetchProducts} from "./features/products/sagas";
 
 function* mySaga(){

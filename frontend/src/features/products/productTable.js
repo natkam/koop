@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from "react-redux";
 
-const ProductTable = props => {
+const ProductTable = () => {
     const products = useSelector(state => state.products.products);
     return <>
         <table>
