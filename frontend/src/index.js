@@ -7,11 +7,8 @@ import {ProductTable} from "./features/products/productTable";
 
 
 const App = () => {
-    const [state, setState] = useState(0);
-
     return <>
         <ProductTable></ProductTable>
-        <button onClick={() => setState(state + 1)}>{state}</button>
     </>
 }
 
