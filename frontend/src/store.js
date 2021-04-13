@@ -1,7 +1,7 @@
 import {configureStore, MiddlewareArray} from "@reduxjs/toolkit";
 import createSagaMiddleware from 'redux-saga';
 import mySaga from './sagas';
-import productReducer from './features/products/productsSlice';
+import productReducer from './features/products/productSlice';
 
 const sagaMiddleware = createSagaMiddleware()
 
@@ -13,6 +13,6 @@ const store = configureStore({
 })
 
 sagaMiddleware.run(mySaga)
-store.dispatch({type: "@@INIT"});
+store.dispatch({type: "FETCH_PRODUCTS"});
 
 export {store};
