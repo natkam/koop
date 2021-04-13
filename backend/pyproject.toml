@@ -9,6 +9,8 @@ license = "GPL-3.0 License"
 python = "^3.9"
 Django = "^3.2"
 psycopg2-binary = "^2.8"
+django-cors-headers = "^3.7"
+djangorestframework = "^3"
 
 [tool.poetry.dev-dependencies]
 black = "20.8b1"
