@@ -13,13 +13,13 @@ django-cors-headers = "^3.7"
 djangorestframework = "^3.12"
 
 [tool.poetry.dev-dependencies]
-black = "20.8b1"
+black = {version = "*", allow-prereleases = true}
 django-debug-toolbar = "^3.2"
 ipython = "^7.22"
 pre-commit = "^2.12"
 
 [tool.black]
-target-version = ['py39']
+target-version = ['py38']
 exclude = 'migrations/|koop/settings'
 
 [build-system]
