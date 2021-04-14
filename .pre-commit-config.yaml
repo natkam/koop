@@ -1,12 +1,12 @@
 # See https://pre-commit.com for more information
 # See https://pre-commit.com/hooks.html for more hooks
-exclude: 'backend/migrations/|backend/koop/settings'
+exclude: "backend/migrations/|backend/koop/settings"
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v3.4.0
     hooks:
-    -   id: trailing-whitespace
-    -   id: end-of-file-fixer
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
 
   - repo: https://github.com/ambv/black
     rev: 20.8b1
@@ -16,4 +16,9 @@ repos:
   - repo: https://github.com/pre-commit/mirrors-eslint
     rev: v7.24.0
     hooks:
-    -   id: eslint
+      - id: eslint
+
+  - repo: https://github.com/pre-commit/mirrors-prettier
+    rev: v2.2.1
+    hooks:
+      - id: prettier
