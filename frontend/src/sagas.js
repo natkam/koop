@@ -1,8 +1,8 @@
-import {takeEvery} from 'redux-saga/effects';
-import {fetchProducts} from "./features/products/sagas";
+import { takeEvery } from "redux-saga/effects";
+import { fetchProducts } from "./features/products/sagas";
 
-function* mySaga(){
-    yield takeEvery("FETCH_PRODUCTS", fetchProducts);
+function* mySaga() {
+  yield takeEvery("FETCH_PRODUCTS", fetchProducts);
 }
 
 export default mySaga;
