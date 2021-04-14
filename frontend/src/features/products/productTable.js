@@ -13,7 +13,7 @@ const ProductTable = () => {
         <thead>
           <tr>
             <th>Nazwa</th>
-            <th>Zamawiania ilość</th>
+            <th>Zamawiana ilość</th>
           </tr>
         </thead>
         <tbody>
@@ -23,7 +23,7 @@ const ProductTable = () => {
               <td>
                 <Form>
                   <Form.Group controlId="amount">
-                    <Form.Control type="number" placeholder="Amount" />
+                    <Form.Control type="number" placeholder="Ilość" />
                   </Form.Group>
                 </Form>
               </td>
