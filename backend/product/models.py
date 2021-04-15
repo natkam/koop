@@ -5,7 +5,7 @@ from django.core.validators import MinValueValidator
 from django.db import models
 
 
-def get_current_year():
+def get_current_year() -> int:
     return date.today().year
 
 
@@ -26,7 +26,7 @@ class Week(models.Model):
         max_length=64, help_text="Name and surname of the week coordinator"
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Week {self.number}/{self.year} - {self.pickup_date}"
 
 
@@ -34,7 +34,7 @@ class Pickup(models.Model):
     # TODO(Nat): Make this model more robust; add fields like role, day, ...?
     pickup = models.CharField(max_length=32)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Pickup option: {self.pickup}"
 
 
@@ -57,7 +57,7 @@ class PersonalOrder(models.Model):
         null=True,
     )
 
-    def __str__(self):
+    def __str__(self) -> str:
         return f"Order for {self.week.pickup_date} by {self.user.get_full_name()}"
 
 
@@ -74,5 +74,5 @@ class Product(models.Model):
     )
     quantity = models.PositiveIntegerField("available quantity", null=True, blank=True)
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.name

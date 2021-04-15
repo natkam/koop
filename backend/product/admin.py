@@ -1,23 +1,31 @@
+import typing
+
 from django.contrib import admin
 
 from product.models import PersonalOrder, Pickup, Product, Week
 
 
+if typing.TYPE_CHECKING:
+    ModelAdmin = admin.ModelAdmin[typing.Any]
+else:
+    ModelAdmin = admin.ModelAdmin
+
+
 @admin.register(PersonalOrder)
-class PersonalOrderAdmin(admin.ModelAdmin):
+class PersonalOrderAdmin(ModelAdmin):
     pass
 
 
 @admin.register(Pickup)
-class PickupAdmin(admin.ModelAdmin):
+class PickupAdmin(ModelAdmin):
     pass
 
 
 @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
+class ProductAdmin(ModelAdmin):
     pass
 
 
 @admin.register(Week)
-class WeekAdmin(admin.ModelAdmin):
+class WeekAdmin(ModelAdmin):
     pass
