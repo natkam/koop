@@ -2,6 +2,9 @@ import { configureStore, MiddlewareArray } from "@reduxjs/toolkit";
 import createSagaMiddleware from "redux-saga";
 import mySaga from "./sagas";
 import productReducer from "./features/products/productSlice";
+import mirageServer from "./server";
+
+mirageServer();
 
 const sagaMiddleware = createSagaMiddleware();
 
