@@ -1,5 +1,7 @@
 const path = require("path");
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const ReactRefreshWebpackPlugin = require("@pmmmwh/react-refresh-webpack-plugin");
+const webpack = require("webpack");
 
 module.exports = {
   mode: "development",
@@ -10,6 +12,8 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "src", "index.html"),
     }),
+    new webpack.HotModuleReplacementPlugin(),
+    new ReactRefreshWebpackPlugin(),
   ],
   module: {
     rules: [
@@ -23,7 +27,12 @@ module.exports = {
       },
       {
         test: /\.js$/,
-        use: ["babel-loader"],
+        use: {
+          loader: "babel-loader",
+          options: {
+            plugins: [require("react-refresh/babel")],
+          },
+        },
       },
     ],
   },
