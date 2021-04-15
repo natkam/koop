@@ -47,3 +47,12 @@ Then activate the hooks:
 ```shell
 pre-commit install
 ```
+
+Although it is not enforced by a pre-commit hook, it is strongly recommended
+to use type annotations and often run [mypy](https://mypy.readthedocs.io/) over
+the backend code:
+```shell
+mypy .
+# or
+poetry run mypy .
+```
