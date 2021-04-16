@@ -49,12 +49,20 @@ class PersonalOrder(models.Model):
             ),
         ]
 
-    week = models.ForeignKey(Week, on_delete=models.CASCADE)
-    user = models.ForeignKey(User, on_delete=models.PROTECT)
+    week = models.ForeignKey(
+        Week, on_delete=models.CASCADE, related_name="personal_orders"
+    )
+    user = models.ForeignKey(
+        User, on_delete=models.PROTECT, related_name="personal_orders"
+    )
     pickup = models.ForeignKey(
         Pickup,
         on_delete=models.SET_NULL,
         null=True,
+        related_name="personal_orders",
+    )
+    products = models.ManyToManyField(
+        "Product", through="ProductPersonalOrder", related_name="personal_orders"
     )
 
     def __str__(self) -> str:
@@ -62,7 +70,9 @@ class PersonalOrder(models.Model):
 
 
 class Product(models.Model):
-    week = models.ForeignKey(Week, on_delete=models.SET_NULL, null=True)
+    week = models.ForeignKey(
+        Week, on_delete=models.SET_NULL, null=True, related_name="products"
+    )
     name = models.CharField(max_length=256, help_text="Name of the product; unit")
     description = models.TextField(blank=True)
     link = models.URLField(blank=True, help_text="Link to the description")
@@ -76,3 +86,21 @@ class Product(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+
+class ProductPersonalOrder(models.Model):
+    """An intermediary model between PersonalOrders and Products."""
+
+    personal_order = models.ForeignKey(
+        PersonalOrder, on_delete=models.CASCADE, related_name="product_personal_orders"
+    )
+    product = models.ForeignKey(
+        Product, on_delete=models.CASCADE, related_name="product_personal_orders"
+    )
+    amount = models.FloatField(validators=[MinValueValidator(0)])
+
+    def __str__(self) -> str:
+        return (
+            f"{self.product} ({self.amount}) - {self.personal_order.user.get_full_name()}, "
+            f"{self.personal_order.week.pickup_date}"
+        )
