@@ -32,10 +32,10 @@ class Week(models.Model):
 
 class Pickup(models.Model):
     # TODO(Nat): Make this model more robust; add fields like role, day, ...?
-    pickup = models.CharField(max_length=32)
+    description = models.CharField(max_length=32)
 
     def __str__(self) -> str:
-        return f"Pickup option: {self.pickup}"
+        return f"Pickup option: {self.description}"
 
 
 class PersonalOrder(models.Model):
@@ -63,9 +63,9 @@ class PersonalOrder(models.Model):
 
 class Product(models.Model):
     week = models.ForeignKey(Week, on_delete=models.SET_NULL, null=True)
-    name = models.CharField(max_length=256, help_text="Name of the product, unit")
+    name = models.CharField(max_length=256, help_text="Name of the product; unit")
     description = models.TextField(blank=True)
-    link = models.URLField(null=True, help_text="Link to the description")
+    link = models.URLField(blank=True, help_text="Link to the description")
     price = models.DecimalField(
         verbose_name="unit price",
         max_digits=6,
