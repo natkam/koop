@@ -28,19 +28,19 @@ class PersonalOrderSerializer(ModelSerializer):
 
 
 class ProductSerializer(ModelSerializer):
-    ordered_amount = serializers.SerializerMethodField()
+    ordered_amount = serializers.FloatField(read_only=True)
 
     class Meta:
         model = Product
-        fields = "__all__"
-
-    def get_ordered_amount(self, product: Product) -> Optional[float]:
-        my_product_order = product.product_personal_orders.filter(
-            personal_order__user=self.context["request"].user
-        ).first()
-        if my_product_order:
-            return my_product_order.amount
-        return None
+        fields = [
+            "name",
+            "description",
+            "link",
+            "price",
+            "quantity",
+            "week",
+            "ordered_amount",
+        ]
 
 
 class ProductPersonalOrderSerializer(ModelSerializer):

@@ -1,9 +1,14 @@
 from typing import Any
 
 from django.contrib.auth.models import AnonymousUser
-from django.db.models import Model, QuerySet, Value
+from django.db.models import (
+    Model,
+    OuterRef,
+    QuerySet,
+    Subquery,
+)
 from django.http import Http404
-from product.models import PersonalOrder, Product, Week
+from product.models import PersonalOrder, Product, ProductPersonalOrder, Week
 from product.serializers import ProductSerializer
 from rest_framework import viewsets
 
@@ -13,17 +18,22 @@ class ProductViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self) -> "QuerySet[Model]":
         week_id: int = self._get_week_id()
-        user = self.request.user
-        if not isinstance(user, AnonymousUser):
-            user_product_order = PersonalOrder.objects.filter(
-                user=user.id, week=week_id
-            ).first()
         queryset: "QuerySet[Any]" = Product.objects.filter(week=week_id)
-        if user_product_order:
-            queryset = (
-                queryset.select_related("week")
-                .prefetch_related("product_personal_orders__personal_order__user")
-                .annotate(ordered_amount=Value(42))
+
+        user = self.request.user
+        if isinstance(user, AnonymousUser):
+            # TODO(Nat): Fake logging in for now; get_or_create a user.
+            return queryset
+
+        user_orders = PersonalOrder.objects.filter(user=user, week=week_id)
+        if user_orders.first() is not None:
+            user_product_order = ProductPersonalOrder.objects.filter(
+                personal_order__user=user,
+                personal_order__week_id=week_id,
+                product=OuterRef("pk"),
+            )[:1]
+            queryset = queryset.annotate(
+                ordered_amount=Subquery(user_product_order.values("amount")[:1])
             )
 
         return queryset

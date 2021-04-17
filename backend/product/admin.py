@@ -23,12 +23,12 @@ class ProductPersonalOrderInline(TabularInline):
         request: Optional[HttpRequest],
         **kwargs: Any,
     ) -> Optional[ModelChoiceField]:
-        """Limit products to the current week."""
+        """Limit Products in the dropdown to the Personal Order's week."""
         if db_field.name == "product" and request is not None:
             personal_order_id = request.resolver_match.kwargs.get("object_id")
             if personal_order_id is not None:
                 week = PersonalOrder.objects.get(pk=personal_order_id).week
-                kwargs["queryset"] = Product.objects.filter(week=week).distinct()
+                kwargs["queryset"] = Product.objects.filter(week=week)
         return super().formfield_for_foreignkey(db_field, request, **kwargs)
 
 
