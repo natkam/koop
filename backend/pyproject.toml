@@ -19,6 +19,7 @@ ipython = "^7.22"
 pre-commit = "^2.12"
 mypy = "^0.812"
 djangorestframework-stubs = "^1.4.0"
+factory-boy = "^3.2.0"
 
 [tool.black]
 target-version = ['py38']
