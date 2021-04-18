@@ -35,6 +35,9 @@ class PickupFactory(DjangoModelFactory):
 
 
 class PersonalOrderFactory(DjangoModelFactory):
+    class Meta:
+        model = PersonalOrder
+
     week = factory.SubFactory(WeekFactory)
     user = factory.SubFactory(UserFactory)
     pickup = factory.SubFactory(PickupFactory)
@@ -45,9 +48,9 @@ class ProductFactory(DjangoModelFactory):
         model = Product
 
     week = factory.SubFactory(WeekFactory)
-    name = factory.Faker("text", max_nb_chars=64)
-    description = factory.Faker("text", max_nb_chars=128)
-    link = factory.Faker("uri")
+    name = factory.Faker("text", max_nb_chars=20)
+    # description = factory.Faker("text", max_nb_chars=128)
+    # link = factory.Faker("uri")
     price = fuzzy.FuzzyDecimal(30)
     quantity = fuzzy.FuzzyInteger(1, 100)
 
@@ -62,9 +65,6 @@ class ProductPersonalOrderFactory(DjangoModelFactory):
 
 
 class PersonalOrderWithOneProductFactory(PersonalOrderFactory):
-    class Meta:
-        model = PersonalOrder
-
     product = factory.RelatedFactory(
         ProductPersonalOrderFactory, factory_related_name="personal_order"
     )
