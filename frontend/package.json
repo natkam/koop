@@ -34,6 +34,7 @@
     "@reduxjs/toolkit": "^1.5.1",
     "babel-polyfill": "^6.26.0",
     "bootstrap": "^4.6.0",
+    "formik": "^2.2.6",
     "miragejs": "^0.1.41",
     "msw": "^0.28.1",
     "react": "^17.0.2",

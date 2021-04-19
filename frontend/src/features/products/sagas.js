@@ -1,16 +1,28 @@
 import { put } from "redux-saga/effects";
-import { setProducts } from "./productSlice";
+import { setOrder } from "./productSlice";
 
-function* fetchProducts() {
-  fetch("http://localhost:8000/products/").then((response) => {
-    response.json().then((data) => {
-      console.log(data);
-    });
-  });
-  const response = yield fetch("http://localhost:8000/products/");
-  const products = yield response.json();
+function* fetchOrder() {
+  const response = yield fetch("http://localhost:8000/weeks/latest/order/");
+  const order = yield response.json();
 
-  yield put(setProducts(products));
+  yield put(setOrder(order));
 }
 
-export { fetchProducts };
+function* updateOrder(action) {
+  const payload = action.payload;
+  const response = yield fetch("http://localhost:8000/weeks/latest/order/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(payload),
+  });
+
+  yield response.json();
+
+  if (response.ok) {
+    yield put({ type: "FETCH_ORDER" });
+  }
+}
+
+export { fetchOrder, updateOrder };

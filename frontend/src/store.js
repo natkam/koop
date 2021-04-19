@@ -16,6 +16,5 @@ const store = configureStore({
 });
 
 sagaMiddleware.run(mySaga);
-store.dispatch({ type: "FETCH_PRODUCTS" });
 
 export { store };

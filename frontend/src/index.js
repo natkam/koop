@@ -4,11 +4,14 @@ import { render } from "react-dom";
 import { Provider } from "react-redux";
 import { store } from "./store";
 import { ProductTable } from "./features/products/productTable";
+import { Container } from "react-bootstrap";
 
 const App = () => {
   return (
     <>
-      <ProductTable></ProductTable>
+      <Container>
+        <ProductTable></ProductTable>
+      </Container>
     </>
   );
 };
