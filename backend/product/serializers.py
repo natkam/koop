@@ -1,4 +1,4 @@
-from typing import Any, Optional, TYPE_CHECKING
+from typing import Any, TYPE_CHECKING
 
 from product.models import PersonalOrder, Pickup, Product, ProductPersonalOrder, Week
 from rest_framework import serializers
@@ -33,6 +33,7 @@ class ProductSerializer(ModelSerializer):
     class Meta:
         model = Product
         fields = [
+            "id",
             "name",
             "description",
             "link",
