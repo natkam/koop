@@ -84,6 +84,7 @@ class ProductPersonalOrderListSerializer(ListSerializer):
             )
             ordered.append(ppo)
             ordered_ids.append(ppo.id)
+        # TODO(Nat): Make sure only the ordered amount data can be altered by the user.
 
         # Perform deletions.
         for ppo in instance:
