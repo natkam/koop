@@ -34,13 +34,9 @@ class OrderView(GenericAPIView):
         if isinstance(request.user, AnonymousUser):
             return Response(data="nope", status=status.HTTP_401_UNAUTHORIZED)
 
-        personal_order = PersonalOrder.objects.filter(
-            week=week_id, user=request.user
-        ).first()
-        if personal_order is None:
-            # TODO(Nat): Create a personal order + product-personal-orders.
-            return Response("No personal order yet. We're working on it.")
-
+        personal_order, _ = PersonalOrder.objects.get_or_create(
+            week_id=week_id, user=request.user
+        )
         queryset = personal_order.product_personal_orders.all()
         request_data = cast(List[Dict[str, Any]], request.data)
         ordered_data = [
@@ -57,7 +53,7 @@ class OrderView(GenericAPIView):
             serializer.save()
             return Response(status=status.HTTP_201_CREATED)
 
-        # TODO(Nat): Handle invalid data properly.
+        # TODO(Nat): Handle invalid data properly, add tests.
         return Response("Wrong data. What a pity!", status=status.HTTP_400_BAD_REQUEST)
 
     def get_queryset(self) -> "QuerySet[Product]":
@@ -66,19 +62,18 @@ class OrderView(GenericAPIView):
 
         user = self.request.user
         if isinstance(user, AnonymousUser):
-            # TODO(Nat): Fake logging in for now; get_or_create a user.
+            # TODO(Nat): Fake login for now? Should it be available without login?
             return queryset
 
-        user_orders = PersonalOrder.objects.filter(user=user, week=week_id)
-        if user_orders.first() is not None:
-            queryset = self._add_order_information_to_queryset(queryset, user, week_id)
-
-        return queryset
+        return self._add_order_information_to_queryset(queryset, user, week_id)
 
     def _add_order_information_to_queryset(
         self, queryset: "QuerySet[Product]", user: User, week_id: int
     ) -> "QuerySet[Product]":
-        """Annotates products with the amounts ordered by the user."""
+        """Annotates products with the amounts ordered by the user.
+
+        Products that have not been ordered will have ordered_amount=None.
+        """
         user_product_order = ProductPersonalOrder.objects.filter(
             personal_order__user=user,
             personal_order__week_id=week_id,
