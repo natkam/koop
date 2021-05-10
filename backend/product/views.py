@@ -1,6 +1,7 @@
 from typing import Any, Dict, List, TYPE_CHECKING, Type, cast
 
 from django.contrib.auth.models import AnonymousUser, User
+from django.db import transaction
 from django.db.models import (
     OuterRef,
     QuerySet,
@@ -27,6 +28,7 @@ class OrderView(GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin):
         """Lists all current week products with the amounts ordered by the user."""
         return self.list(request, week_id)
 
+    @transaction.atomic
     def put(self, request: Request, week_id: int) -> Response:
         """Updates the user's order, or creates a new one if it does not exist.
 
@@ -40,7 +42,6 @@ class OrderView(GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin):
         personal_order, _ = PersonalOrder.objects.get_or_create(
             week_id=week_id, user=request.user
         )
-        personal_order.product_personal_orders.all().delete()
         request_data = cast(List[Dict[str, Any]], request.data)
         ordered_data = [
             {
@@ -53,6 +54,7 @@ class OrderView(GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin):
         ]
         serializer = self.get_serializer(data=ordered_data, many=True)
         serializer.is_valid(raise_exception=True)
+        personal_order.product_personal_orders.all().delete()
         serializer.save()
         # TODO(Nat): Handle invalid data properly, add tests.
         return Response(status=status.HTTP_201_CREATED)

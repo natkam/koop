@@ -1,6 +1,5 @@
-from product.models import PersonalOrder, Product, Week
+from product.models import PersonalOrder, Week
 from product.tests.factories import (
-    PersonalOrderFactory,
     PersonalOrderWithOneProductFactory,
     ProductFactory,
     UserFactory,
@@ -20,15 +19,14 @@ class TestPersonalOrderEndpoint(APITestCase):
         cls.week_3 = WeekFactory()
         cls.latest_week = Week.objects.order_by("pickup_date").last()
         cls.latest_week_url = reverse("order", kwargs={"week_id": cls.latest_week.id})
-        ProductFactory.create_batch(5, week=cls.week_3)
+        cls.product_count = 5
+        ProductFactory.create_batch(cls.product_count, week=cls.week_3)
 
     def test_latest_week_url_alias(self):
         response = self.client.get(reverse("order", kwargs={"week_id": "latest"}))
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(len(response.data), 5)
+        self.assertEqual(len(response.data), self.product_count)
         self.assertEqual(response.data[0].get("week"), self.latest_week.id)
-        for _ in range(Product.objects.filter(week=self.latest_week).count()):
-            self.assertNotIn("ordered_amount", response.data[_])
 
     def test_post_method_not_allowed(self):
         self.client.force_login(self.user)
@@ -46,10 +44,10 @@ class TestPersonalOrderEndpoint(APITestCase):
 
     def test_user_sees_amounts_of_products_they_ordered(self):
         self.client.force_login(self.user)
-        personal_order = PersonalOrderFactory(week=self.latest_week, user=self.user)
-        product = ProductFactory(week=self.latest_week)
-        amount = 1.125
-        personal_order.products.add(product, through_defaults={"amount": amount})
+        personal_order = PersonalOrderWithOneProductFactory(
+            week=self.latest_week, user=self.user
+        )
+        amount = personal_order.product_personal_orders.first().amount
 
         response = self.client.get(self.latest_week_url)
         self.assertEqual(response.status_code, status.HTTP_200_OK)

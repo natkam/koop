@@ -5,10 +5,8 @@ from rest_framework import serializers
 
 if TYPE_CHECKING:
     ModelSerializer = serializers.ModelSerializer[Any]
-    ListSerializer = serializers.ListSerializer[Any]
 else:
     ModelSerializer = serializers.ModelSerializer
-    ListSerializer = serializers.ListSerializer
 
 
 class WeekSerializer(ModelSerializer):
