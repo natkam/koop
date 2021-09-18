@@ -1,10 +1,8 @@
-from rest_framework import routers
+from django.urls import re_path
 
-from product.views import ProductViewSet
+from product.views import OrderView
 
-router = routers.DefaultRouter()
-router.register(
-    "weeks/(?P<week_id>\d+|latest)/order", ProductViewSet, basename="product"
-)
 
-urlpatterns = router.urls
+urlpatterns = [
+    re_path("weeks/(?P<week_id>\d+|latest)/order", OrderView.as_view(), name="order")
+]

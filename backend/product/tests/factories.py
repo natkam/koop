@@ -60,13 +60,16 @@ class ProductPersonalOrderFactory(DjangoModelFactory):
         model = ProductPersonalOrder
 
     personal_order = factory.SubFactory(PersonalOrderFactory)
-    product = factory.SubFactory(ProductFactory)
+    product = factory.SubFactory(
+        ProductFactory, week=factory.SelfAttribute("..personal_order.week")
+    )
     amount = fuzzy.FuzzyFloat(0.1, 5)
 
 
 class PersonalOrderWithOneProductFactory(PersonalOrderFactory):
     product = factory.RelatedFactory(
-        ProductPersonalOrderFactory, factory_related_name="personal_order"
+        ProductPersonalOrderFactory,
+        factory_related_name="personal_order",
     )
 
 

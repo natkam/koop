@@ -91,6 +91,14 @@ class Product(models.Model):
 class ProductPersonalOrder(models.Model):
     """An intermediary model between PersonalOrders and Products."""
 
+    class Meta:
+        constraints = [
+            models.UniqueConstraint(
+                fields=["personal_order", "product"],
+                name="add_product_only_once_to_personal_order",
+            ),
+        ]
+
     personal_order = models.ForeignKey(
         PersonalOrder, on_delete=models.CASCADE, related_name="product_personal_orders"
     )

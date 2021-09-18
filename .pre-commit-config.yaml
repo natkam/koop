@@ -22,3 +22,4 @@ repos:
     rev: v2.2.1
     hooks:
       - id: prettier
+        files: "^frontend/"

@@ -142,6 +142,11 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static/")
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
+REST_FRAMEWORK = {
+    # "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    "TEST_REQUEST_DEFAULT_FORMAT": "json",
+}
+
 # Required by Django Debug Toolbar
 INTERNAL_IPS = ["127.0.0.1"]
 DEBUG_TOOLBAR_CONFIG = {"SHOW_TOOLBAR_CALLBACK": lambda x: True}
