@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, TYPE_CHECKING, Type, cast
+from typing import Any, Dict, List, TYPE_CHECKING, cast
 
 from django.contrib.auth.models import AnonymousUser, User
 from django.db import transaction
@@ -8,12 +8,11 @@ from django.db.models import (
     Subquery,
 )
 from product.models import PersonalOrder, Product, ProductPersonalOrder, Week
-from product.serializers import ProductPersonalOrderSerializer, ProductSerializer
-from rest_framework import generics, mixins, status
+from product.serializers import ProductSerializer
+from rest_framework import generics, mixins, serializers, status
 from rest_framework.exceptions import NotFound
 from rest_framework.request import Request
 from rest_framework.response import Response
-from rest_framework.serializers import BaseSerializer
 
 if TYPE_CHECKING:
     GenericAPIView = generics.GenericAPIView[Any]
@@ -23,6 +22,7 @@ else:
 
 class OrderView(GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin):
     """View of the personal order of the user, allows updating the order."""
+    serializer_class = ProductSerializer
 
     def get(self, request: Request, week_id: int) -> Response:
         """Lists all current week products with the amounts ordered by the user."""
@@ -42,20 +42,24 @@ class OrderView(GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin):
         personal_order, _ = PersonalOrder.objects.get_or_create(
             week_id=week_id, user=request.user
         )
+        order_serializer = self.get_serializer(data=request.data, many=True)
+        if not order_serializer.is_valid():
+            # breakpoint()
+            raise serializers.ValidationError(detail={**order_serializer.errors})
+
         request_data = cast(List[Dict[str, Any]], request.data)
-        ordered_data = [
-            {
-                "personal_order": personal_order.id,
-                "product": data_item.get("id"),
-                "amount": data_item.get("ordered_amount"),
-            }
+        ordered_products = [
+            ProductPersonalOrder(
+                personal_order=personal_order.id,
+                product=data_item.get("id"),
+                amount=data_item.get("ordered_amount")
+            )
             for data_item in request_data
             if data_item.get("ordered_amount")
         ]
-        serializer = self.get_serializer(data=ordered_data, many=True)
-        serializer.is_valid(raise_exception=True)
         personal_order.product_personal_orders.all().delete()
-        serializer.save()
+        ProductPersonalOrder.objects.bulk_create(ordered_products)
+
         # TODO(Nat): Handle invalid data properly, add tests.
         return Response(status=status.HTTP_201_CREATED)
 
@@ -97,8 +101,8 @@ class OrderView(GenericAPIView, mixins.ListModelMixin, mixins.UpdateModelMixin):
 
         return int(self.kwargs["week_id"])
 
-    def get_serializer_class(self) -> "Type[BaseSerializer[Any]]":
-        if self.request.method == "PUT":
-            return ProductPersonalOrderSerializer
-        else:
-            return ProductSerializer
+    # def get_serializer_class(self) -> "Type[BaseSerializer[Any]]":
+    #     if self.request.method == "PUT":
+    #         return ProductPersonalOrderSerializer
+    #     else:
+    #         return ProductSerializer
